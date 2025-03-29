@@ -7,14 +7,14 @@ Scripts for detecting anomalous events in data from the main antenna of the Jica
 1)Descarga/clona el repositorio en un directorio de trabajo 
 2)Utiliza los siguientes comandos en la terminal para crear un entorno de anaconda e instalar las dependencias necesarias para utilizar el programa
 ```
-    conda create -n JRO_CR python=3.9.21
-    conda activate JRO_CR
-    pip install numpy==1.23.0
-    pip install matplotlib==3.5.1
-    pip install scipy==1.11.0
-    pip install pandas==2.2.3
-    pip install schainpy==3.0.1rc1
-    
+conda create -n JRO_CR python=3.9.21
+conda activate JRO_CR
+pip install numpy==1.23.0
+pip install matplotlib==3.5.1
+pip install scipy==1.11.0
+pip install pandas==2.2.3
+pip install schainpy==3.0.1rc1
+
 ```
 ## rti_plot.py
 ### El script rti_plot.py permite graficar un RTI exploratorio de los datos, con el objetivo de identificar a qué rangos se observa el electrochorro, para poder excluir esos rangos de la búsqueda de eventos.
@@ -22,8 +22,8 @@ Scripts for detecting anomalous events in data from the main antenna of the Jica
 3)Abre el archivo parameters.py con cualquier editor de codigo. En la variable `path` Establece el directorio en el cual se encuentran los archivos raw del experimento a procesar. Los demás parámetros también pueden ser configurados. La sección `rti_plot.py` del archivo contiene parámetros específicos para ese script. Tras editar los parámetros, guarda los cambios. 
 4)Abre una terminal en el directorio de trabajo y ejecuta:
 ```
-    conda activate JRO_CR
-    python rti_plot.py
+conda activate JRO_CR
+python rti_plot.py
 
 ```
 5)Esto iniciará la ejecución del script. Tras unos segundos, se abrirá una ventana interactiva de matplotlib con los RTI de cada canal para unos cuantos perfiles analizados (Parámetro: `profiles_lim`). 
@@ -39,8 +39,8 @@ Scripts for detecting anomalous events in data from the main antenna of the Jica
 10) Configura el parámetro `output_dir` con la ruta al directorio donde deseas guardar los RTI amplificados de posibles eventos. 
 11) Abre una terminal en el directorio de trabajo y ejecuta:
 ```
-    conda activate JRO_CR
-    python event_identifier.py
+conda activate JRO_CR
+python event_identifier.py
 
 ```
 12) El programa tardará un tiempo en procesar los datos y a medida que encuentre eventos, irá almacenando los RTIs amplificados en el directorio establecido en el paso 10
