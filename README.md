@@ -53,3 +53,9 @@ python event_identifier.py
 ```
 
 12) El programa tardará un tiempo en procesar los datos y a medida que encuentre eventos, irá almacenando los RTIs amplificados en el directorio establecido en el paso 10
+
+
+## Notas:
+-Ya que podría haber complicaciones al momento de procesar todos los perfiles de un solo archivo a la vez, se define un parámetro `profiles_lim` que dividirá cada archivo en grupos de la cantidad de perfiles que se establezca en este parámetro. Es decir que si establecemos este parametro en 20000, se dividirá el archivo en grupos de 20000 perfiles que serán analizados uno después del otro. Esto es necesario solo si el archivo tiene un peso considerable (superior a 1GB), de lo contrario se puede desactivar este parámetro definiendolo como un número muy grande (`1e20`) 
+
+
