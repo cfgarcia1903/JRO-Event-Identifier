@@ -6,7 +6,7 @@ Scripts for detecting anomalous events in data from the main antenna of the Jica
 ## Descarga y dependencias
 1)Descarga/clona el repositorio en un directorio de trabajo 
 2)Utiliza los siguientes comandos en la terminal para crear un entorno de anaconda e instalar las dependencias necesarias para utilizar el programa
-    ```
+```
     conda create -n JRO_CR python=3.9.21
     conda activate JRO_CR
     pip install numpy==1.23.0
@@ -15,7 +15,7 @@ Scripts for detecting anomalous events in data from the main antenna of the Jica
     pip install pandas==2.2.3
     pip install schainpy==3.0.1rc1
     
-    ```
+```
 ## rti_plot.py
 ### El script rti_plot.py permite graficar un RTI exploratorio de los datos, con el objetivo de identificar a qué rangos se observa el electrochorro, para poder excluir esos rangos de la búsqueda de eventos.
 
