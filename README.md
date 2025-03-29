@@ -41,7 +41,7 @@ python rti_plot.py
 ## event_identifier.py
 ### Este script analiza la data perfil a perfil, encuentra posibles eventos anómalos, grafica RTI amplificados al rededor de estos eventos y los guarda en un directorio.
 
-9) Abre el archivo parameters.py, en el parámetro `exclude_range` establece el rango mínimo y máximo en el cual hay electrochorro. Si no deseas usar esta opción, establece un valor alto como [1e20,2e20]
+9) Abre el archivo parameters.py, en el parámetro `exclude_range` establece el rango mínimo y máximo en el cual hay electrochorro. Si no deseas usar esta opción, establece un valor alto como `[1e20,2e20]`
 
 10) Configura el parámetro `output_dir` con la ruta al directorio donde deseas guardar los RTI amplificados de posibles eventos. 
 
