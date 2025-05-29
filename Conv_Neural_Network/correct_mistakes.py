@@ -10,10 +10,11 @@ import chocopearl as ch
 
 
 
-RTI_path='/home/pc-igp-173/Documentos/neural_network/RTIs/june_2023_chunk9/old'
-classified_with_mistakes_path='/home/pc-igp-173/Documentos/DATA/classified_data/trails_jun2023_9_with_mistakes.pickle'
-classified_path =  '/home/pc-igp-173/Documentos/DATA/classified_data/trails_jun2023_9_classified.pickle'
-cosmic_rays_path=  '/home/pc-igp-173/Documentos/DATA/cosmic_rays/trails_jun2023_9_CR.pickle'
+RTI_path='/home/pc-igp-173/Documentos/neural_network/RTIs/trails_JUN_2024_Day3/old'
+
+classified_with_mistakes_path='/home/pc-igp-173/Documentos/DATA/classified_data/trails_JUN_2024_Day3_with_mistakes.pickle'
+classified_path =  '/home/pc-igp-173/Documentos/DATA/classified_data/trails_JUN_2024_Day3.pickle'
+cosmic_rays_path=  '/home/pc-igp-173/Documentos/DATA/cosmic_rays/trails_JUN_2024_Day3_CR.pickle'
 #####################################################################
 if __name__ == '__main__':
 

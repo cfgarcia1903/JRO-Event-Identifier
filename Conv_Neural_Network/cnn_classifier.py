@@ -24,9 +24,9 @@ def silence_tensorflow():
 ######################################################################
 
 model_path = '/home/pc-igp-173/Documentos/neural_network/CNN_Classifier.pickle'
-unclassified_path='/home/pc-igp-173/Documentos/DATA/unclassified_data/trails_jun2023_9.pickle'
-classified_with_mistakes_path='/home/pc-igp-173/Documentos/DATA/classified_data/trails_jun2023_9_with_mistakes.pickle'
-RTI_path='/home/pc-igp-173/Documentos/neural_network/RTIs/june_2023_chunk9/old'
+unclassified_path='/home/pc-igp-173/Documentos/DATA/unclassified_data/trails_JUN_2024_Day2-4.pickle'
+classified_with_mistakes_path='/home/pc-igp-173/Documentos/DATA/classified_data/trails_JUN_2024_Day2-4_with_mistakes.pickle'
+RTI_path='/home/pc-igp-173/Documentos/neural_network/RTIs/trails_JUN_2024_Day2-4/old'
 
 
 #####################################################################
