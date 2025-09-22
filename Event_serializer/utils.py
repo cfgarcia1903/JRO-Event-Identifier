@@ -61,13 +61,12 @@ def interpolate_timestamps(timestamps_change, ids_change, full_ids):
 ####                 DATA PROCESSING UTILS         ####
 #######################################################
 
-def separate_data(profiles):
-    activeRTI = classes.RTI_matrix()
-    passiveRTI = classes.RTI_matrix()
+def separate_data(datablock,basetime,ippSeconds):
+    active_data = None
+    passive_data = None
 
-    pass ## PROFRAMAR LOGICA DE SEPARACION
 
-    return activeRTI, passiveRTI
+    return active_data, passive_data
 
 
 def find_sequences(arr, min_size=3):
