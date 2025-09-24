@@ -1,6 +1,6 @@
 from os import getcwd,listdir
 from os.path import join as pathjoin
-from numpy import array, where, asarray,correlate
+from numpy import array, where, asarray,correlate,zeros
 from scipy.interpolate import interp1d
 
 import classes
@@ -61,11 +61,23 @@ def interpolate_timestamps(timestamps_change, ids_change, full_ids):
 ####                 DATA PROCESSING UTILS         ####
 #######################################################
 
-def separate_data(datablock,basetime,ippSeconds):
-    active_data = None
-    passive_data = None
+def separate_data(datablock,basetime,ippSeconds,cut=-20,first_passive=False):
+    active_data = {}
+    passive_data = {}
+    data=zeros((datablock.shape[1],datablock.shape[0],datablock.shape[2]))
+    for i in range(datablock.shape[1]):
+        profile=datablock[:,i,:]
+        data[i,:,:]=profile
+    
+    active_data['profiles'] = data[:cut,:,:]
+    passive_data['profiles'] = data[cut:,:,:]
 
+    times=basetime + (array(range(datablock.shape[1])) * ippSeconds)
+    active_data['times'] = times[:cut]
+    passive_data['times'] = times[cut:]
 
+    if first_passive:
+        active_data, passive_data = passive_data, active_data
     return active_data, passive_data
 
 
@@ -82,7 +94,7 @@ def find_sequences(arr, min_size=3):
     return groups
 
 
-def decode(signal,ranges,code,nbaud,mode='valid'):
+def decode(signal,code,mode='valid'):
     if mode=='valid':
         signal = asarray(signal)
         code = asarray(code)

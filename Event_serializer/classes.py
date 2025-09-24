@@ -34,7 +34,7 @@ class RTI_matrix:
             for k, ch in enumerate(channels):
                 complex_voltage=profile[ch]
                 if decode:
-                    complex_voltage_decoded=correlate(complex_voltage, code_vec, mode='full')[:-nBaud+1] ## Decodification         #[:-len(complex_power)+1]#[:-nBaud+1]#[nBaud-1:]                  
+                    complex_voltage_decoded=decode(complex_voltage,code_vec)
                     self.voltage_decoded[:, j, k] = asarray(complex_voltage_decoded) 
                     power = (conjugate(complex_voltage_decoded)*complex_voltage_decoded).real
                 else:
