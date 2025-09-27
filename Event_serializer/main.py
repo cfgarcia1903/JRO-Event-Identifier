@@ -39,7 +39,10 @@ if __name__ == '__main__':
         sleep(1)
         print(f'Copied {basename(file)} to {processing_hub_path}')
 
-        processor.process_file_hybrid(basename(file))
+        returncode= processor.process_file_hybrid(basename(file))
+        if returncode == 0:
+            print(f'Processor returned code 0 while working on file {basename(file)}')
+            break
         print(f'Processed {basename(file)}')
 
         remove(tmp_file_path)

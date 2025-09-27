@@ -18,7 +18,7 @@ def process_file_hybrid(raw_file_name):
     from schainpy.model import VoltageReader
     rawdataObj = VoltageReader()
     rawdataObj.name='VoltageReader'
-    rawdataObj.setup(path = r'/home/francisco/Documentos/JRO/Release_2.0.0 test/processing_hub',
+    rawdataObj.setup(path = parameters.processing_hub_path,
                     startDate=parameters.startDate,
                     endDate=parameters.endDate,
                     startTime=parameters.startTime,

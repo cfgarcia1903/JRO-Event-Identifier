@@ -4,16 +4,13 @@ import numpy.array
 ####                 PATHS                         ####
 #######################################################
 
-raw_files_root_path = ''              # Root path where raw files are located
-processing_hub_path = ''             # Path to where each raw file will be processed 
-output_root_path = ''                # Root path where output files will be saved
+raw_files_root_path = r'/mnt/compartido/d2025237/'              # Root path where raw files are located
+processing_hub_path = r'/home/pc-igp-173/Documentos/EXP2025/processing_hub/'             # Path to where each raw file will be processed 
+output_root_path = r'/home/pc-igp-173/Documentos/EXP2025/output/'                # Root path where output files will be saved
 
 #######################################################
 ####                 PROCESSING PARAMETERS         ####
 #######################################################
-
-TX_mode= 'hibrid'                          # 'simple' o 'hybrid' 
-TX_location= 'upper'                       # 'upper' o 'lower', ubicación del pulso de transmision en cada perfil
 
 channels = [0, 1, 2]                       # Canales a analizar
 decode= False                              # Activar decodificación. True: El archivo necesita ser decodificado.
