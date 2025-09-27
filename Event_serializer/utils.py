@@ -68,7 +68,7 @@ def separate_data(datablock,basetime,ippSeconds,cut=-20,first_passive=False):
     for i in range(datablock.shape[1]):
         profile=datablock[:,i,:]
         data[i,:,:]=profile
-    
+
     active_data['profiles'] = data[:cut,:,:]
     passive_data['profiles'] = data[cut:,:,:]
 
@@ -90,11 +90,11 @@ def find_sequences(arr, min_size=3):
                 groups.append(arr[start:i])  # solo corta si el grupo es válido
             start = i
     if len(arr) - start >= min_size:
-        groups.append(arr[start:])
+        groups.append(list(arr[start:]))
     return groups
 
 
-def decode(signal,code,mode='valid'):
+def decode_signal(signal,code,mode='valid'):
     if mode=='valid':
         signal = asarray(signal)
         code = asarray(code)

@@ -30,18 +30,31 @@ def process_file_hybrid(raw_file_name):
                     name='VoltageReader')
     
     block =1
+    ranges = None
     while(not rawdataObj.flagNoMoreFiles):
+        rawdataObj.run()
         try:
+            if ranges is None:
+                ranges = rawdataObj.dataOut.heightList
             datablock = rawdataObj.datablock
             basetime = rawdataObj.dataOut.utctime = rawdataObj.basicHeaderObj.utc + rawdataObj.basicHeaderObj.miliSecond/1000.
             ippSeconds = rawdataObj.radarControllerHeaderObj.ippSeconds
-            ranges = rawdataObj.dataOut.heightList
 
-            print('[Processor] Processing block No. {block}')
-            active_data,passive_data= utils.separate_data(datablock,basetime,ippSeconds)
+            print(f'[Processor] Processing block No. {block}')
+            if datablock is None:
+                block+=1
+                #print('Next Block')
+                rawdataObj.readNextBlock()
+                continue
+            #else:    # FOR DEBUGGING PURPOSES
+                #print(datablock.shape)
+                #print(basetime)
+                #print(ippSeconds)
+                #print(len(ranges))
 
-            activeRTI = classes.RTI_matrix(active_data['profiles'], ranges, active_data['times'], channels=parameters.channels, decode=parameters.decode, code_vec=parameters.code_vec, nBaud=parameters.nBaud)
-            passiveRTI = classes.RTI_matrix(passive_data['profiles'], ranges, passive_data['times'], channels=parameters.channels, decode=parameters.decode, code_vec=parameters.code_vec, nBaud=parameters.nBaud)
+            active_data,passive_data= utils.separate_data(datablock,basetime,ippSeconds,cut=parameters.cut,first_passive=False)
+            activeRTI = classes.RTI_matrix(active_data['profiles'], ranges, active_data['times'], channels=parameters.channels, decode=parameters.decode, code_vec=parameters.code_vec, nBaud=parameters.nBaud, name='Active')
+            passiveRTI = classes.RTI_matrix(passive_data['profiles'], ranges, passive_data['times'], channels=parameters.channels, decode=parameters.decode, code_vec=parameters.code_vec, nBaud=parameters.nBaud, name='Passive')
             activeRTI.significance_filter(nSigma=parameters.nSigma, significance_filter_units=parameters.significance_filter_units)
             passiveRTI.significance_filter(nSigma=parameters.nSigma, significance_filter_units=parameters.significance_filter_units)
             activeRTI.coincidence_filter(min_channels=parameters.min_channels)
@@ -54,9 +67,10 @@ def process_file_hybrid(raw_file_name):
             passive_output_path = join(parameters.output_root_path, passive_output_path)
             activeRTI.process_trails(zoomed_time_size=parameters.zoomed_time_size, zoomed_range_size=parameters.zoomed_range_size, output_path_pickle=active_output_path,raw_file_name=raw_file_name)
             passiveRTI.process_trails(zoomed_time_size=parameters.zoomed_time_size, zoomed_range_size=parameters.zoomed_range_size, output_path_pickle=passive_output_path,raw_file_name=raw_file_name)
+            print('') 
 
             ##### Memory Management
-            del datablock, ranges, basetime, ippSeconds
+            del datablock, basetime, ippSeconds
             del activeRTI, passiveRTI
             del active_data, passive_data
             del active_output_path, passive_output_path
@@ -66,13 +80,19 @@ def process_file_hybrid(raw_file_name):
                 break
             else:
                 block+=1
-                print('Next Block')
+                #print('Next Block')
                 rawdataObj.readNextBlock()
-    
+                continue
+            
         except Exception as e:
+            if str(e) == 'No more files to read':
+                break
             print(f"An error occurred while processing: {e}")
             return 0
 
     del rawdataObj
     del VoltageReader
     return 1
+
+if __name__ == '__main__':
+    process_file_hybrid('test')

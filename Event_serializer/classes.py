@@ -1,15 +1,17 @@
 from numpy import where, asarray,correlate,conjugate,zeros,log10,mean,std,sum,all
-import numpy.complex64
-import numpy.int8
-import os.path.basename
+from numpy import complex64,int8,float64
+
+from os.path import basename
 import parameters
 import utils
 import pickle
 
 class RTI_matrix:
-    def __init__(self, profiles, ranges, times, channels=parameters.channels, decode=parameters.decode, code_vec=parameters.code_vec, nBaud=parameters.nBaud):
+    def __init__(self, profiles, ranges, times, channels=parameters.channels, decode=parameters.decode, code_vec=parameters.code_vec, nBaud=parameters.nBaud, name = 'RTI'):
         ## METADATA
-        self.n_ranges = len(profiles[0])
+        self.name = name
+
+        self.n_ranges = len(profiles[0][0])
         self.n_times = len(profiles)
         self.n_channels = len(channels)
 
@@ -18,23 +20,24 @@ class RTI_matrix:
         self.channels = channels
 
         ## DATA ARRAYS
-        self.voltage = zeros((self.n_ranges, self.n_times, self.n_channels), dtype=numpy.complex64)
+        #print((self.n_ranges, self.n_times, self.n_channels))  FOR DEBUGGING PURPOSES
+        self.voltage = zeros((self.n_ranges, self.n_times, self.n_channels), dtype=complex64)
         if decode:
             self.uncut_ranges=ranges
             self.ranges=self.ranges[:self.n_ranges-nBaud+1]
             self.n_ranges=self.n_ranges-nBaud+1
-            self.voltage_decoded = zeros((self.n_ranges, self.n_times, self.n_channels), dtype=numpy.complex64)
+            self.voltage_decoded = zeros((self.n_ranges, self.n_times, self.n_channels), dtype=complex64)
         else:
             self.voltage_decoded = None
             self.uncut_ranges=None
 
-        self.power_lin = zeros((self.n_ranges, self.n_times, self.n_channels), dtype=numpy.float64)
+        self.power_lin = zeros((self.n_ranges, self.n_times, self.n_channels), dtype=float64)
 
         for j, profile in enumerate(profiles):
             for k, ch in enumerate(channels):
                 complex_voltage=profile[ch]
                 if decode:
-                    complex_voltage_decoded=decode(complex_voltage,code_vec)
+                    complex_voltage_decoded=utils.decode_signal(complex_voltage,code_vec)
                     self.voltage_decoded[:, j, k] = asarray(complex_voltage_decoded) 
                     power = (conjugate(complex_voltage_decoded)*complex_voltage_decoded).real
                 else:
@@ -62,10 +65,10 @@ class RTI_matrix:
                 significance_threshold=mean(pow_vec)+nSigma*std(pow_vec)
                 self.significance_mask[i,:,k]= pow_vec>=significance_threshold
 
-        print('significance filter completed')
+        #print(f'Significance filter completed ({self.name})', end=' | ')
 
     def coincidence_filter(self, min_channels=parameters.min_channels):
-        self.coincidence_mask = (sum(self.significance_mask.astype(numpy.int8), axis=2) >= min_channels).astype(numpy.float64)
+        self.coincidence_mask = (sum(self.significance_mask.astype(int8), axis=2) >= min_channels).astype(float64)
         
         self.power_lin_joint = sum(self.power_lin, axis=2)
         self.power_db_joint = 10 * log10(self.power_lin_joint + 1)
@@ -73,7 +76,7 @@ class RTI_matrix:
         self.power_lin_joint_significant = self.coincidence_mask * self.power_lin_joint
         self.power_db_joint_significant = self.coincidence_mask * self.power_db_joint
 
-        print('coincidence filter completed')
+        #print('coincidence filter completed ({self.name})', end=' | ')
 
     def shape_filter(self, min_samples=parameters.min_samples):
 
@@ -99,14 +102,14 @@ class RTI_matrix:
                 includes_up= possible_trail[-1]==up_lim
                 
                 if includes_lo and includes_up:
-                    side= possible_trail
+                    side= list(possible_trail)
                 elif includes_lo:
-                    side=possible_trail+[possible_trail[-1]+1]
+                    side=list(possible_trail)+[int(possible_trail[-1]+1)]
                 elif includes_up:
-                    side=[possible_trail[0]-1]+possible_trail
+                    side=[int(possible_trail[0]-1)]+list(possible_trail)
                 else:
-                    side=[possible_trail[0]-1]+possible_trail+[possible_trail[-1]+1]
-    
+                    side=[int(possible_trail[0]-1)]+list(possible_trail)+[int(possible_trail[-1]+1)]
+
                 left_clear= all(self.coincidence_mask[side,j-1]==0)
                 right_clear= all(self.coincidence_mask[side,j+1]==0)
 
@@ -115,11 +118,11 @@ class RTI_matrix:
                     trails.append(trail) 
 
         self.trails=trails
-        print('shape filter completed')
+        #print('shape filter completed ({self.name})', end=' | ')
 
     def process_trails(self, zoomed_time_size=parameters.zoomed_time_size, zoomed_range_size=parameters.zoomed_range_size,
-                        output_path_pickle=parameters.output_path_pickle,raw_file_name=''):
-        print(f'Number of trails found: {len(self.trails)}')
+                        output_path_pickle=None,raw_file_name=None):
+        print(f'({self.name}) Number of trails found: {len(self.trails)}', end=' | ')
         stored_crs=0
         if len(self.trails):
 
@@ -168,7 +171,7 @@ class RTI_matrix:
 
 
                 trail_data={
-                        'ID':trail_ID,'CosmicRay': None,'file':os.path.basename(raw_file_name),
+                        'ID':trail_ID,'CosmicRay': None,'file':basename(raw_file_name),
 
                         'time_ID':trail[2],'timestamp':self.times[trail[2]],
                         'ranges':self.ranges,'uncut_ranges':self.uncut_ranges,
@@ -194,7 +197,9 @@ class RTI_matrix:
                 with open(output_path_pickle, 'ab') as f:
                     pickle.dump(trail_data, f)
                 stored_crs += 1
-        print(f'{stored_crs} were stored in {output_path_pickle}')
+            print(f'{stored_crs} trails were stored in {output_path_pickle}')
+        else:
+            print('No trails to process')
        
 
 
