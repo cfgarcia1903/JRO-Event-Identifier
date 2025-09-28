@@ -1,4 +1,4 @@
-# JRO-Event-Identifier 3.0.0
+# JRO-Event-Identifier 2.0.0
 Sistema para la detección y procesamiento de eventos anómalos en datos de la antena principal del Observatorio de Radio Jicamarca.
 
 # Instrucciones de uso - Event_serializer
