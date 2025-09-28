@@ -1,13 +1,21 @@
-# JRO-Event-Identifier
-Scripts for detecting anomalous events in data from the main antenna of the Jicamarca Radio Observatory.
+# JRO-Event-Identifier 2.0.0
+Sistema para la detección y procesamiento de eventos anómalos en datos de la antena principal del Observatorio de Radio Jicamarca.
 
-# Instrucciones de uso
+# Instrucciones de uso - Event_serializer
 
-## Descarga y dependencias
-1)Descarga/clona el repositorio en un directorio de trabajo 
+## Descripción
+Event_serializer es un software de procesamiento automatizado que analiza archivos de datos del radar de Jicamarca, separando las señales activas y pasivas, aplicando filtros de significancia y detectando eventos anómalos de manera eficiente.
 
-2)Utiliza los siguientes comandos en la terminal para crear un entorno de anaconda e instalar las dependencias necesarias para utilizar el programa
+## Instalación y dependencias
+
+### 1. Descarga del repositorio
+```bash
+git clone https://github.com/cfgarcia1903/JRO-Event-Identifier.git
+cd JRO-Event-Identifier
 ```
+
+### 2. Configuración del entorno
+```bash
 conda create -n JRO_CR python=3.9.21
 conda activate JRO_CR
 pip install numpy==1.23.0
@@ -15,47 +23,74 @@ pip install matplotlib==3.5.1
 pip install scipy==1.11.0
 pip install pandas==2.2.3
 pip install schainpy==3.0.1rc1
-
 ```
-## rti_plot.py
-### El script rti_plot.py permite graficar un RTI exploratorio de los datos, con el objetivo de identificar a qué rangos se observa el electrochorro, para poder excluir esos rangos de la búsqueda de eventos.
 
-3)Abre el archivo parameters.py con cualquier editor de codigo. En la variable `path` Establece el directorio en el cual se encuentran los archivos raw del experimento a procesar. Los demás parámetros también pueden ser configurados. La sección `rti_plot.py` del archivo contiene parámetros específicos para ese script. Tras editar los parámetros, guarda los cambios. 
+## Configuración
 
-4)Abre una terminal en el directorio de trabajo y ejecuta:
-```
+### 3. Configuración de parámetros
+Edita el archivo `Event_serializer/parameters.py` con los siguientes parámetros:
+
+#### Rutas principales:
+- `raw_files_root_path`: Directorio donde se encuentran los archivos .r sin procesar
+- `processing_hub_path`: Directorio temporal para procesamiento (se crea automáticamente en caso no exista)
+- `output_root_path`: Directorio donde se guardarán los archivos procesados (.pickle)
+
+#### Parámetros de procesamiento:
+- `channels`: Lista de canales a analizar (ej: [0, 1, 2])
+- `decode`: True si los datos necesitan decodificación
+- `code_vec`: Vector de código para decodificación
+- `nBaud`: Número de baudios del código
+- `startDate` y `endDate`: Rango máximo de fechas para procesar
+- `startTime` y `endTime`: Rango máximo de horas para procesar
+
+#### Parámetros de filtrado:
+- `nSigma`: Número de sigmas para filtro de significancia
+- `significance_filter_units`: 'linear' o 'dB', escala sobre la que se aplica el filtro de significancia
+- `min_channels`: Mínimo de canales requeridos en coincidencia
+- `min_samples`: Mínimo de muestras consecutivas requeridas
+
+## Ejecución
+
+### 4. Ejecutar el procesador
+```bash
 conda activate JRO_CR
-python rti_plot.py
-
+cd Event_serializer
+python main.py
 ```
+En caso se ejecute en un servidor, será necesario tener una interfaz gráfica para que se pueda cargar el módulo Signal Chain sin errores
 
-5)Esto iniciará la ejecución del script. Tras unos segundos, se abrirá una ventana interactiva de matplotlib con los RTI de cada canal para unos cuantos perfiles analizados (Parámetro: `profiles_lim`). 
+## Funcionamiento del sistema
 
-6)Anota el rango mínimo y máximo en el cual se observa electrochorro.
+El software Event_serializer funciona de la siguiente manera:
 
-7)Si cierras la ventana, el script continuará analizando más perfiles y abrirá otra ventana con el RTI de los perfiles siguientes.
+1. **Preparación**: Crea un directorio temporal de procesamiento
+2. **Listado**: Encuentra todos los archivos .r en el directorio de datos
+3. **Procesamiento iterativo**: Para cada archivo:
+   - Lo copia al directorio temporal
+   - Separa los datos en señales activas y pasivas  
+   - Aplica decodificación (si está habilitada)
+   - Crea matrices RTI (Range-Time-Intensity) para cada tipo de señal
+   - Aplica filtros de significancia, coincidencia y forma
+   - Procesa y guarda los eventos detectados como archivos .pickle
+   - Limpia los archivos temporales
 
-8)Puedes repetir el proceso hasta analizar toda la data. Para detenerlo, basta con usar `CTR + c` en la terminal.
+### Archivos de salida
+- Los eventos detectados se guardan como archivos .pickle en `output_root_path`
+- Formato: `{nombre_archivo}_B{bloque}_active.pickle` y `{nombre_archivo}_B{bloque}_passive.pickle` dependiendo si los perfiles procesados cuentan con pulso de transmisión o si el radar se encuentra funcionando de forma pasiva
+- Cada archivo contiene diccionarios con datos de los eventos anómalos identificados (un diccionario por evento)
+
+### Monitoreo del progreso
+El sistema proporciona información en tiempo real sobre:
+- Archivos siendo procesados
+- Bloques de datos analizados
+- Eventos detectados y guardados
 
 
-## event_identifier.py
-### Este script analiza la data perfil a perfil, encuentra posibles eventos anómalos, grafica RTI amplificados al rededor de estos eventos y los guarda en un directorio.
+## Notas importantes
 
-9) Abre el archivo parameters.py, en el parámetro `exclude_range` establece el rango mínimo y máximo en el cual hay electrochorro. Si no deseas usar esta opción, establece un valor alto como `[1e20,2e20]`
-
-10) Configura el parámetro `output_dir` con la ruta al directorio donde deseas guardar los RTI amplificados de posibles eventos. 
-
-11) Abre una terminal en el directorio de trabajo y ejecuta:
-```
-conda activate JRO_CR
-python event_identifier.py
-
-```
-
-12) El programa tardará un tiempo en procesar los datos y a medida que encuentre eventos, irá almacenando los RTIs amplificados en el directorio establecido en el paso 10
-
-
-## Notas:
--Ya que podría haber complicaciones al momento de procesar todos los perfiles de un solo archivo a la vez, se define un parámetro `profiles_lim` que dividirá cada archivo en grupos de la cantidad de perfiles que se establezca en este parámetro. Es decir que si establecemos este parametro en 20000, se dividirá el archivo en grupos de 20000 perfiles que serán analizados uno después del otro. Esto es necesario solo si el archivo tiene un peso considerable (superior a 1GB), de lo contrario se puede desactivar este parámetro definiendolo como un número muy grande (`1e20`) 
+- El sistema procesa automáticamente todos los archivos .r encontrados en el directorio especificado
+- Se recomienda tener suficiente espacio en disco para los archivos temporales y de salida
+- Los archivos de salida son archivos binarios Python (.pickle) que pueden ser cargados posteriormente para análisis
+- El procesamiento puede tomar tiempo considerable dependiendo del tamaño y cantidad de archivos 
 
 
