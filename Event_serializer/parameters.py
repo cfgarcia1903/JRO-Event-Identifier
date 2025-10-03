@@ -23,7 +23,7 @@ endDate=dt.date(2050,6,5)
 startTime=dt.time(0,0,0)
 endTime=dt.time(23,59,59)
 
-zoomed_time_size=70
+zoomed_time_size=90
 zoomed_range_size=50
 
 #######################################################

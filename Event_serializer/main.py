@@ -4,7 +4,14 @@ matplotlib.use('Agg')
 from os.path import basename
 from os import makedirs,remove
 from time import sleep
-from shutil import copy
+import shutil
+
+BUFFER_SIZE = 4*1024*1024
+_original_copyfileobj = shutil.copyfileobj
+def custom_copyfileobj(fsrc, fdst, length=BUFFER_SIZE):
+    return _original_copyfileobj(fsrc,fdst,length)
+shutil.copyfileobj = custom_copyfileobj
+
 #######################################################
 ####                 MODULES                       ####
 #######################################################
@@ -35,7 +42,7 @@ if __name__ == '__main__':
     ###################################################################### FILES ITERATION ########################################################################
     for file in file_paths:
 
-        tmp_file_path = copy(file, processing_hub_path)   
+        tmp_file_path = shutil.copy(file, processing_hub_path)
         sleep(1)
         print(f'Copied {basename(file)} to {processing_hub_path}')
 
