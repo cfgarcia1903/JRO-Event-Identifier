@@ -15,8 +15,8 @@ output_root_path = r'/home/pc-igp-173/Documentos/EXP2025/output/'               
 channels = [0, 1, 2]                       # Canales a analizar
 cut = -20
 decode= True                              # Activar decodificación. True: El archivo necesita ser decodificado.
-code_vec= array([1,0,0,1,0,0,0,0,0,1,1,1,0,1,1,0,0,1,0,1,1,0,0,0,1,0,0,1,1,0,1,0,1,1,1,1,0,1,0,1,0,1,1,1,0,0,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0,0,1,0,1,1,0,0,1,1,1,0,0,0,1,0,1,1,0,0,1,1,1,0,0,0,1,0])      # código. Expresar como una sola lista
-nBaud=88                                        # Número de baudios del código
+code_vec= array([1,1,0,1,1,0,1,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,1,1,1,0,0,0])      # código. Expresar como una sola lista
+nBaud=28                                        # Número de baudios del código
 
 startDate=dt.date(2000,6,5)                # Fechas y horas limite para buscar eventos. Se sugiere dejar como está
 endDate=dt.date(2050,6,5)

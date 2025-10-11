@@ -66,7 +66,7 @@ def process_file_hybrid(raw_file_name):
             active_output_path = join(parameters.output_root_path, active_output_path)
             passive_output_path = join(parameters.output_root_path, passive_output_path)
             activeRTI.process_trails(zoomed_time_size=parameters.zoomed_time_size, zoomed_range_size=parameters.zoomed_range_size, output_path_pickle=active_output_path,raw_file_name=raw_file_name)
-            passiveRTI.process_trails(zoomed_time_size=18, zoomed_range_size=18, output_path_pickle=passive_output_path,raw_file_name=raw_file_name)
+            passiveRTI.process_trails_var(zoomed_time_size=18, zoomed_range_size=18, output_path_pickle=passive_output_path,raw_file_name=raw_file_name)
             print('') 
 
             ##### Memory Management
