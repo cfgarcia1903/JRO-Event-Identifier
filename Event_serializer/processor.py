@@ -54,7 +54,7 @@ def process_file_hybrid(raw_file_name):
 
             active_data,passive_data= utils.separate_data(datablock,basetime,ippSeconds,cut=parameters.cut,first_passive=False)
             activeRTI = classes.RTI_matrix(active_data['profiles'], ranges, active_data['times'], channels=parameters.channels, decode=parameters.decode, code_vec=parameters.code_vec, nBaud=parameters.nBaud, name='Active')
-            passiveRTI = classes.RTI_matrix(passive_data['profiles'], ranges, passive_data['times'], channels=parameters.channels, decode=parameters.decode, code_vec=parameters.code_vec, nBaud=parameters.nBaud, name='Passive')
+            passiveRTI = classes.Passive_matrix(passive_data['profiles'], ranges, passive_data['times'], channels=parameters.channels, name='Passive')
             activeRTI.significance_filter(nSigma=parameters.nSigma, significance_filter_units=parameters.significance_filter_units)
             passiveRTI.significance_filter(nSigma=parameters.nSigma, significance_filter_units=parameters.significance_filter_units)
             activeRTI.coincidence_filter(min_channels=parameters.min_channels)
@@ -66,8 +66,10 @@ def process_file_hybrid(raw_file_name):
             active_output_path = join(parameters.output_root_path, active_output_path)
             passive_output_path = join(parameters.output_root_path, passive_output_path)
             activeRTI.process_trails(zoomed_time_size=parameters.zoomed_time_size, zoomed_range_size=parameters.zoomed_range_size, output_path_pickle=active_output_path,raw_file_name=raw_file_name)
-            passiveRTI.process_trails_var(zoomed_time_size=18, zoomed_range_size=18, output_path_pickle=passive_output_path,raw_file_name=raw_file_name)
+            passiveRTI.process_trails(output_path_pickle=passive_output_path,raw_file_name=raw_file_name)
             print('') 
+            print(f'{raw_file_name[:-2]}_B{block} processed')
+                  
 
             ##### Memory Management
             del datablock, basetime, ippSeconds

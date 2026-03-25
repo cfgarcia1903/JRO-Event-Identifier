@@ -93,17 +93,3 @@ class RTI_matrix:
             print(f'block stored in {output_path_pickle}')
         
        
-
-
-
-
-
-
-
-
-
-
-
-
-
-

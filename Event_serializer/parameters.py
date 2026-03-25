@@ -4,16 +4,16 @@ from numpy import array
 ####                 PATHS                         ####
 #######################################################
 
-raw_files_root_path = r'/mnt/compartido/d2025237/'              # Root path where raw files are located
-processing_hub_path = r'/home/pc-igp-173/Documentos/EXP2025/processing_hub/'             # Path to where each raw file will be processed 
-output_root_path = r'/home/pc-igp-173/Documentos/EXP2025/output/'                # Root path where output files will be saved
+raw_files_root_path = r'/mnt/datos/d2026062/'              # Root path where raw files are located
+processing_hub_path = r'/home/pc-igp-173/Documentos/EXP2026/processing_hub/'             # Path to where each raw file will be processed 
+output_root_path = r'/home/pc-igp-173/Documentos/EXP2026/output/'                # Root path where output files will be saved
 
 #######################################################
 ####                 PROCESSING PARAMETERS         ####
 #######################################################
 
 channels = [0, 1, 2]                       # Canales a analizar
-cut = -20
+cut = 0
 decode= True                              # Activar decodificación. True: El archivo necesita ser decodificado.
 code_vec= array([1,1,0,1,1,0,1,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,1,1,1,0,0,0])      # código. Expresar como una sola lista
 nBaud=28                                        # Número de baudios del código
