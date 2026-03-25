@@ -54,28 +54,24 @@ def process_file_hybrid(raw_file_name):
 
             active_data,passive_data= utils.separate_data(datablock,basetime,ippSeconds,cut=parameters.cut,first_passive=False)
             activeRTI = classes.RTI_matrix(active_data['profiles'], ranges, active_data['times'], channels=parameters.channels, decode=parameters.decode, code_vec=parameters.code_vec, nBaud=parameters.nBaud, name='Active')
-            passiveRTI = classes.Passive_matrix(passive_data['profiles'], ranges, passive_data['times'], channels=parameters.channels, name='Passive')
+            #passiveRTI = classes.RTI_matrix(passive_data['profiles'], ranges, passive_data['times'], channels=parameters.channels, decode=parameters.decode, code_vec=parameters.code_vec, nBaud=parameters.nBaud, name='Passive')
             activeRTI.significance_filter(nSigma=parameters.nSigma, significance_filter_units=parameters.significance_filter_units)
-            passiveRTI.significance_filter(nSigma=parameters.nSigma, significance_filter_units=parameters.significance_filter_units)
+            #passiveRTI.significance_filter(nSigma=parameters.nSigma, significance_filter_units=parameters.significance_filter_units)
             activeRTI.coincidence_filter(min_channels=parameters.min_channels)
-            passiveRTI.coincidence_filter(min_channels=parameters.min_channels)
-            activeRTI.shape_filter(min_samples=parameters.min_samples)
-            passiveRTI.shape_filter(min_samples=parameters.min_samples)
-            active_output_path=f'{raw_file_name[:-2]}_B{block}_active.pickle'
-            passive_output_path=f'{raw_file_name[:-2]}_B{block}_passive.pickle'
+            #passiveRTI.coincidence_filter(min_channels=parameters.min_channels)
+            active_output_path=f'{raw_file_name[:-2]}_B{block}_full_active.pickle'
+            #passive_output_path=f'{raw_file_name[:-2]}_B{block}_passive.pickle'
             active_output_path = join(parameters.output_root_path, active_output_path)
-            passive_output_path = join(parameters.output_root_path, passive_output_path)
-            activeRTI.process_trails(zoomed_time_size=parameters.zoomed_time_size, zoomed_range_size=parameters.zoomed_range_size, output_path_pickle=active_output_path,raw_file_name=raw_file_name)
-            passiveRTI.process_trails(output_path_pickle=passive_output_path,raw_file_name=raw_file_name)
+            #passive_output_path = join(parameters.output_root_path, passive_output_path)
+            activeRTI.save_block(output_path_pickle=active_output_path,raw_file_name=raw_file_name)
+            #passiveRTI.save_block(output_path_pickle=passive_output_path,raw_file_name=raw_file_name)
             print('') 
-            print(f'{raw_file_name[:-2]}_B{block} processed')
-                  
 
             ##### Memory Management
             del datablock, basetime, ippSeconds
-            del activeRTI, passiveRTI
+            del activeRTI
             del active_data, passive_data
-            del active_output_path, passive_output_path
+            del active_output_path
 
             ##### Next Block
             if rawdataObj.flagNoMoreFiles:
